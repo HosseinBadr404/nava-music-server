@@ -1,6 +1,6 @@
 # Nava Music Server
 
-The Java backend for [Nava Music](https://github.com/HosseinBadr404/nava-music-app), an academic cross-platform music-player and marketplace project.
+The Java backend for [Nava Music](https://github.com/HosseinBadr404/music_player), an academic cross-platform music-player and marketplace project.
 
 ## Features
 
