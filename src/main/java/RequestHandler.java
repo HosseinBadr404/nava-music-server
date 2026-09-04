@@ -45,7 +45,6 @@ public class RequestHandler {
                             JsonObject userData = new JsonObject();
                             userData.addProperty("name", user.getName());
                             userData.addProperty("email", user.getEmail());
-                            userData.addProperty("password", user.getPassword());
                             userData.addProperty("balance", user.getBalance());
                             userData.add("purchasedMusic", gson.toJsonTree(user.getPurchasedMusic()));
                             if (user.getSubscriptionEndDate() != null) {
@@ -71,7 +70,6 @@ public class RequestHandler {
                         JsonObject userData = new JsonObject();
                         userData.addProperty("name", user.getName());
                         userData.addProperty("email", user.getEmail());
-                        userData.addProperty("password", user.getPassword());
                         userData.addProperty("balance", user.getBalance());
                         userData.add("purchasedMusic", gson.toJsonTree(user.getPurchasedMusic()));
                         response.add("data", userData);
@@ -85,7 +83,6 @@ public class RequestHandler {
                         JsonObject userData = new JsonObject();
                         userData.addProperty("name", user.getName());
                         userData.addProperty("email", user.getEmail());
-                        userData.addProperty("password", user.getPassword());
                         userData.addProperty("balance", user.getBalance());
                         userData.add("purchasedMusic", gson.toJsonTree(user.getPurchasedMusic()));
                         if (user.getSubscriptionEndDate() != null) {
@@ -112,7 +109,6 @@ public class RequestHandler {
                             JsonObject userData = new JsonObject();
                             userData.addProperty("name", updatedUser.getName());
                             userData.addProperty("email", updatedUser.getEmail());
-                            userData.addProperty("password", updatedUser.getPassword());
                             userData.addProperty("balance", updatedUser.getBalance());
                             userData.add("purchasedMusic", gson.toJsonTree(updatedUser.getPurchasedMusic()));
                             if (updatedUser.getSubscriptionEndDate() != null) {
@@ -132,7 +128,6 @@ public class RequestHandler {
                         JsonObject userData = new JsonObject();
                         userData.addProperty("name", user.getName());
                         userData.addProperty("email", user.getEmail());
-                        userData.addProperty("password", user.getPassword());
                         userData.addProperty("balance", user.getBalance());
                         userData.add("purchasedMusic", gson.toJsonTree(user.getPurchasedMusic()));
                         if (user.getSubscriptionEndDate() != null) {

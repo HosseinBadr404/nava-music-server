@@ -5,15 +5,15 @@ import java.util.List;
 public class User {
     private String name;
     private String email;
-    private String password;
+    private final String passwordHash;
     private double balance;
     private List<String> purchasedMusic;
     private LocalDate subscriptionEndDate;
 
-    public User(String name, String email, String password, double balance) {
+    public User(String name, String email, String passwordHash, double balance) {
         this.name = name;
         this.email = email;
-        this.password = password;
+        this.passwordHash = passwordHash;
         this.balance = balance;
         this.purchasedMusic = new ArrayList<>();
         this.subscriptionEndDate = null;
@@ -21,7 +21,7 @@ public class User {
 
     public String getName() { return name; }
     public String getEmail() { return email; }
-    public String getPassword() { return password; }
+    public String getPasswordHash() { return passwordHash; }
     public double getBalance() { return balance; }
     public List<String> getPurchasedMusic() { return purchasedMusic; }
     public LocalDate getSubscriptionEndDate() { return subscriptionEndDate; }
@@ -64,5 +64,10 @@ public class User {
 
     public void addPurchasedMusic(String musicTitle) {
         purchasedMusic.add(musicTitle);
+    }
+
+    public void updateProfile(String newName, String newEmail) {
+        name = newName;
+        email = newEmail;
     }
 }

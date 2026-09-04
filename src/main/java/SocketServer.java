@@ -4,15 +4,16 @@ import java.net.Socket;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class SocketServer {
-    
-    private final int port = 8081;
+public class SocketServer implements AutoCloseable {
+    private final int port;
     private final ExecutorService pool = Executors.newFixedThreadPool(10);
 
+    public SocketServer(int port) {
+        this.port = port;
+    }
+
     public void start() {
-        try {
-            
-            ServerSocket serverSocket = new ServerSocket(port);
+        try (ServerSocket serverSocket = new ServerSocket(port)) {
             System.out.println("Server is running on port 8081...");
 
             while (true) {
@@ -29,10 +30,8 @@ public class SocketServer {
         }
     }
 
-}
-class tester{
-    public static void main(String[] args) {
-        SocketServer server = new SocketServer();
-        server.start();
+    @Override
+    public void close() {
+        pool.shutdownNow();
     }
 }

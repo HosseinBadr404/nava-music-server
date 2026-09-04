@@ -4,7 +4,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class UserManager {
-    private static final String USERS_FILE = "users.txt";
+    private static final String USERS_FILE = System.getenv().getOrDefault(
+            "NAVA_USERS_FILE", "data/users.txt");
     private List<User> users;
     private MusicManager musicManager;
 
@@ -28,9 +29,9 @@ public class UserManager {
                 if (parts.length >= 4) {
                     String name = parts[0];
                     String email = parts[1];
-                    String password = parts[2];
+                    String passwordHash = parts[2];
                     double balance = Double.parseDouble(parts[3]);
-                    User user = new User(name, email, password, balance);
+                    User user = new User(name, email, passwordHash, balance);
 
                     if (parts.length > 4 && !parts[4].isEmpty()) {
                         String[] musicTitles = parts[4].split(",");
@@ -55,7 +56,7 @@ public class UserManager {
             String purchasedMusic = String.join(",", user.getPurchasedMusic());
             String subscriptionEnd = user.getSubscriptionEndDate() != null ? user.getSubscriptionEndDate().toString() : "";
             return String.format("%s|%s|%s|%.2f|%s|%s",
-                    user.getName(), user.getEmail(), user.getPassword(),
+                    user.getName(), user.getEmail(), user.getPasswordHash(),
                     user.getBalance(), purchasedMusic, subscriptionEnd);
         }).collect(Collectors.toList());
         FileUtil.writeLines(USERS_FILE, lines);
@@ -64,15 +65,18 @@ public class UserManager {
     // Check user credentials
     public boolean login(String email, String password) {
         return users.stream()
-                .anyMatch(user -> user.getEmail().equals(email) && user.getPassword().equals(password));
+                .anyMatch(user -> user.getEmail().equalsIgnoreCase(email)
+                        && PasswordHasher.verify(password, user.getPasswordHash()));
     }
 
     // Register new user
     public boolean signUp(String name, String email, String password) {
-        if (users.stream().anyMatch(user -> user.getEmail().equals(email))) {
+        if (name == null || name.isBlank() || email == null || email.isBlank()
+                || password == null || password.length() < 8
+                || users.stream().anyMatch(user -> user.getEmail().equalsIgnoreCase(email))) {
             return false;
         }
-        users.add(new User(name, email, password, 10.0));
+        users.add(new User(name.trim(), email.trim().toLowerCase(), PasswordHasher.hash(password), 10.0));
         saveUsers();
         return true;
     }
@@ -80,7 +84,7 @@ public class UserManager {
     // Find user by email
     public User getUserByEmail(String email) {
         return users.stream()
-                .filter(user -> user.getEmail().equals(email))
+                .filter(user -> user.getEmail().equalsIgnoreCase(email))
                 .findFirst()
                 .orElse(null);
     }
@@ -133,20 +137,8 @@ public class UserManager {
             return false;
         }
 
-        try {
-            java.lang.reflect.Field nameField = User.class.getDeclaredField("name");
-            nameField.setAccessible(true);
-            nameField.set(user, newName);
-
-            java.lang.reflect.Field emailField = User.class.getDeclaredField("email");
-            emailField.setAccessible(true);
-            emailField.set(user, newEmail);
-
-            saveUsers();
-            return true;
-        } catch (NoSuchFieldException | IllegalAccessException e) {
-            System.out.println("Error updating user info: " + e.getMessage());
-            return false;
-        }
+        user.updateProfile(newName.trim(), newEmail.trim().toLowerCase());
+        saveUsers();
+        return true;
     }
 }

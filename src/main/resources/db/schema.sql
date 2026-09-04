@@ -1,0 +1,37 @@
+CREATE DATABASE IF NOT EXISTS nava_music;
+USE nava_music;
+
+CREATE TABLE IF NOT EXISTS Music (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    title VARCHAR(255) NOT NULL UNIQUE,
+    artist VARCHAR(255) NOT NULL,
+    image TEXT,
+    price DECIMAL(10, 2) NOT NULL DEFAULT 0,
+    downloads INT NOT NULL DEFAULT 0,
+    rating DECIMAL(3, 2) NOT NULL DEFAULT 0,
+    category VARCHAR(80) NOT NULL,
+    audio_base64 LONGTEXT
+);
+
+CREATE TABLE IF NOT EXISTS Comment (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    content TEXT NOT NULL,
+    user_email VARCHAR(320) NOT NULL,
+    music_id BIGINT NOT NULL,
+    likes INT NOT NULL DEFAULT 0,
+    dislikes INT NOT NULL DEFAULT 0,
+    liked_by JSON NOT NULL,
+    disliked_by JSON NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_comment_music FOREIGN KEY (music_id) REFERENCES Music(id)
+);
+
+CREATE TABLE IF NOT EXISTS Transaction (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    user_email VARCHAR(320) NOT NULL,
+    music_id BIGINT NULL,
+    amount DECIMAL(10, 2) NOT NULL,
+    is_subscription BOOLEAN NOT NULL DEFAULT FALSE,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_transaction_music FOREIGN KEY (music_id) REFERENCES Music(id)
+);
